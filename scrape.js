@@ -10,7 +10,7 @@ const list = htmlDocument.querySelectorAll(".list-item.col-md-4.col-sm-6");
 
 const finalOutput = [];
 
-for (let i = 0; i < 3; i++) {
+for (let i = 0; i < 4; i++) {
   const item = list[i];
   const aElement = item.querySelector("a");
   const itemUrl = aElement.href;
@@ -26,6 +26,14 @@ for (let i = 0; i < 3; i++) {
 
   const detailsOutput = [];
 
+  const imageTag = itemHtmlDocument.querySelector("link[rel='preload'][media]");
+  const imageUrl = imageTag.href;
+  const fileName = imageUrl.split("/").pop();
+
+  const imageResponse = await fetch(imageUrl);
+  const arrayBuffer = await imageResponse.arrayBuffer();
+  fs.writeFileSync(`outputs/${fileName}`, Buffer.from(arrayBuffer));
+
   for (let i = 0; i < detailsList.length; i++) {
     const detailsAElement = detailsList[i].querySelector("a");
     const detailsTopic = detailsAElement.textContent;
@@ -36,6 +44,7 @@ for (let i = 0; i < 3; i++) {
   finalOutput.push({
     Name: aElement.textContent,
     Link: aElement.href,
+    Image: imageUrl,
     Details: detailsOutput,
   });
 }
